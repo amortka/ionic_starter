@@ -52,3 +52,14 @@ gulp.task('git-check', function(done) {
   }
   done();
 });
+
+gulp.task('clean', function(done) {
+    del([
+        '.tmp',
+        'dist'
+    ], done);
+});
+
+gulp.task('build', function() {
+
+});

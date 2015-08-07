@@ -1,0 +1,17 @@
+{
+  "curly"   : true,
+  "eqeqeq"  : true,
+  "undef"   : true,
+  "jquery"  : true,
+  "node"    : true,
+
+  // global variables
+  "globals": {
+    "angular"   : false,
+    "jasmine"   : false,
+    "$"         : false,
+    "_"         : false,
+    "module"    : false,
+    "require"   : false
+  }
+}
