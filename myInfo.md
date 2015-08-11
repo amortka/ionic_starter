@@ -18,6 +18,13 @@ bower install ngCordova
 cordova plugin add cordova-plugin-camera
 ```
 
+```
+ioonic build android
+ionic prepare android
+ionic run android
+```
+
+
 ## git
 ```
 git init

@@ -4,8 +4,6 @@
   "undef"   : true,
   "jquery"  : true,
   "node"    : true,
-
-  // global variables
   "globals": {
     "angular"   : false,
     "jasmine"   : false,
