@@ -29,6 +29,7 @@ gulp.task('serve', ['watch'], function() {
       'app'
   ], [
       '.tmp/**/*.css',
+      '.tmp/index.html',
       'app/common/**/*.html',
       'app/common/**/*.js',
       'app/components/**/*.html',
@@ -36,5 +37,13 @@ gulp.task('serve', ['watch'], function() {
       'app/pages/**/*.html',
       'app/pages/**/*.js'
   ]);
+
+});
+
+
+gulp.task('serve-dist', function() {
+    browserSyncInit([
+        'www'
+    ], []);
 
 });

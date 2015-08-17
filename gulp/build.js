@@ -4,10 +4,11 @@ var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 var util = require('util');
+var _ = require('lodash');
 
 var paths = {
     sass: [
-        './scss/**/*.scss'
+        './app/scss/**/*.scss'
     ],
     partials: [
         './app/**/*.html'
@@ -31,7 +32,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('styles', function () {
-    return gulp.src('./scss/ionic.app.scss')
+    return gulp.src(paths.sass)
         .pipe($.sass({
             errLogToConsole: true
         }))
@@ -59,7 +60,6 @@ gulp.task('html', function () {
 
     return target
         .pipe($.inject(source, {
-            read: false,
             addRootSlash: false,
             relative: true,
             starttag: '<!-- inject:partials:{{ext}} -->'
@@ -67,37 +67,51 @@ gulp.task('html', function () {
         .pipe(gulp.dest(paths.tmp));
 });
 
-gulp.task('watch', ['build'], function () {
+gulp.task('watch', [], function () {
+    var injectables = _.union(paths.partials, paths.scripts);
+
     //gulp-watch is better for watching new or deleted files
-    $.watch(paths.sass, function () {
-        gulp.start('sass');
+   $.watch(paths.sass, function () {
+        gulp.start('styles');
     });
     $.watch(paths.scripts, function () {
         gulp.start('scripts');
+    });
+    $.watch(injectables, function () {
         gulp.start('html');
     });
 });
 
 
-gulp.task('build', ['styles', 'scripts', 'html'], function () {
-});
+gulp.task('build', ['styles', 'scripts', 'html'], function () {});
 
-gulp.task('dist', function () {
+gulp.task('dist', ['build'], function () {
 
-    var filterJS = $.filter(['**/*.js', '!lib/**/*.*']);
+    var filterJS = $.filter(['**/*.js', '!lib/**/*.*'], {restore: true});
+    var filterIndex = $.filter(['index.html'], {restore: true});
 
     return gulp.src([
         './app/**/*.*',
         './.tmp/**/*.*'
     ])
         .pipe(filterJS)
-        //.pipe($.ngAnnotate({
-        // remove: true,
-        // add: true,
-        // single_quotes: true
-        // }))
-        .pipe($.debug())
-        //.pipe($.uglify())
+        .pipe($.concat('app.min.js'))
+        .pipe($.ngAnnotate({
+             remove: true,
+             add: true,
+             single_quotes: true
+         }))
+//        .pipe($.uglify())
+        .pipe(gulp.dest(paths.dist))
         .pipe(filterJS.restore)
+        .pipe(filterIndex)
+        .pipe($.inject(gulp.src('www/app.min.js'), {
+            read: false,
+            addRootSlash: false,
+            relative: false,
+            ignorePath: 'www',
+            starttag: '<!-- inject:partials:{{ext}} -->'
+        }))
+        .pipe(filterIndex.restore)
         .pipe(gulp.dest(paths.dist));
 });
