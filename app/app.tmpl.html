@@ -1,17 +1,22 @@
-<ion-tabs class="tabs-icon-top tabs-color-active-positive">
+<ion-tabs class="tabs-icon-top tabs-color-active-positive" ng-class="{'tabs-item-hide': hideTabs}">
 
   <!-- Dashboard Tab -->
-  <ion-tab title="Status" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" ui-sref="app.main">
+  <ion-tab title="Dashboard" icon-off="ion-ios-home-outline" icon-on="ion-ios-home" ui-sref="app.main">
     <ion-nav-view name="tab-dash"></ion-nav-view>
   </ion-tab>
 
   <!-- Chats Tab -->
-  <ion-tab title="Lists" icon-off="ion-ios-chatboxes-outline" icon-on="ion-ios-chatboxes"ui-sref="app.list">
+  <ion-tab title="Lists" icon-off="ion-ios-list-outline" icon-on="ion-ios-list" ui-sref="app.list">
     <ion-nav-view name="tab-chats"></ion-nav-view>
   </ion-tab>
 
+  <!-- Chats Tab -->
+  <ion-tab title="Other" icon-off="ion-ios-nutrition-outline" icon-on="ion-ios-nutrition" ui-sref="app.other">
+    <ion-nav-view name="tab-other"></ion-nav-view>
+  </ion-tab>
+
   <!-- Account Tab -->
-  <ion-tab title="Settings" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" ui-sref="app.config">
+  <ion-tab title="More" icon-off="ion-ios-more-outline" icon-on="ion-ios-more" ui-sref="app.more">
     <ion-nav-view name="tab-account"></ion-nav-view>
   </ion-tab>
 

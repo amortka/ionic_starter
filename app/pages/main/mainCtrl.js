@@ -9,5 +9,4 @@ angular.module('app.main')
       console.log('hello world');
         $scope.hello = 'world!';
 
-
     });

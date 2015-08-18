@@ -1,13 +1,20 @@
 <ion-view view-title="List">
-  <ion-content class="padding">
-    <div class="list card">
-      <div class="item item-divider">Some list</div>
-      <div class="item item-body">
-        <div>
-          aaa nbbb ccc
+    <!--  hide-nav-bar="true" hide-tabs -->
+    <!-- Main content, usually <ion-nav-view> -->
+    <ion-content class="padding">
+        <ion-refresher
+                on-refresh="listCtrl.refresh()">
+        </ion-refresher>
+        <div class="list card">
+            <div class="item item-divider">Some list</div>
+            <div class="item item-body">
+                <button class="button button-outline button-positive" ui-sref="app.list-secondary">
+                    PRIMARY Button {{ listCtrl.hello }}
+                </button>
+                <button class="button button-outline button-positive" ui-sref="app.main">
+                    app.home
+                </button>
+            </div>
         </div>
-      </div>
-    </div>
-
-  </ion-content>
+    </ion-content>
 </ion-view>
