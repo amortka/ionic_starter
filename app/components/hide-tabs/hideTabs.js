@@ -5,7 +5,10 @@ angular.module('app.components', [])
     return {
         restrict: 'A',
         link: function($scope) {
-            console.log('hideTabs link fn');
+            console.log('hello world13');
+
+
+
             var events = [
                 '$ionicView.loaded',
                 '$ionicView.enter',

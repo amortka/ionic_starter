@@ -24,15 +24,6 @@ var paths = {
     tmp: './.tmp'
 };
 
-/*
- flow:
- development: *.css, *.html, *.js -> .tmp/
- [styles] [html] [js]
-
- dist: .tmp/**.* -> dist/
-
- */
-
 gulp.task('clean', function () {
     del([
         paths.tmp,
@@ -40,8 +31,16 @@ gulp.task('clean', function () {
     ]);
 });
 
-gulp.task('styles', function () {
-    gulp.src(paths.sass)
+gulp.task('scripts', function() {
+    return gulp.src(paths.scripts)
+       .pipe($.debug())
+       .pipe($.jshint())
+       .pipe($.jshint.reporter('jshint-stylish'))
+       .pipe($.size());
+});
+
+gulp.task('styles', function() {
+    return gulp.src(paths.sass)
         .pipe($.sass({
             errLogToConsole: true
         }))
@@ -49,22 +48,14 @@ gulp.task('styles', function () {
         .pipe($.minifyCss({
             keepSpecialComments: 0
         }))
-        //.pipe($.rename({
-        //    extname: '.min.css'
-        //}))
-        .pipe(gulp.dest(paths.dist + '/css/'))
-        .pipe(gulp.dest(paths.app + '/css/'));
-});
-
-gulp.task('js-hint', function () {
-    gulp.src(paths.scripts)
-        .pipe($.jshint())
-        .pipe($.jshint.reporter('jshint-stylish'))
-        .pipe($.size());
+        .pipe(process.env.NODE_ENV === 'production' ? $.rename({
+            extname: '.min.css'
+        }) : $.util.noop())
+        .pipe(process.env.NODE_ENV === 'production' ? gulp.dest(paths.dist + '/css/') : $.util.noop())
 });
 
 gulp.task('js-min', function () {
-    gulp.src(paths.scripts)
+    return gulp.src(paths.scripts)
         .pipe($.concat('app.min.js'))
         .pipe($.ngAnnotate({
             remove: true,
@@ -72,19 +63,19 @@ gulp.task('js-min', function () {
             single_quotes: true
         }))
         .pipe(gulp.dest(paths.dist));
+});
 
-    gulp.src(paths.tmp + '/index.html')
+gulp.task('disthtml', ['js-min'], function () {
+    return gulp.src('./app/index.html')
         .pipe($.inject(gulp.src(paths.dist + '/app.min.js'), {
-            read: false,
             addRootSlash: false,
-            relative: false,
-            ignorePath: 'www',
+            relative: true,
             starttag: '<!-- inject:partials:{{ext}} -->'
         }))
         .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('index', function () {
+gulp.task('buildhtml', function() {
     gulp.src('./app/index.html')
         .pipe($.inject(gulp.src(paths.scripts), {
             addRootSlash: false,
@@ -94,35 +85,44 @@ gulp.task('index', function () {
         .pipe(gulp.dest(paths.tmp));
 });
 
-gulp.task('watch', [], function () {
-    var injectables = _.union(paths.partials, paths.scripts);
-
-    //gulp-watch is better for watching new or deleted files
-    $.watch(paths.sass, function () {
-        gulp.start('styles');
-    });
-    $.watch(paths.scripts, function () {
-        gulp.start('js-hint');
-    });
-    $.watch(paths.scripts, function () {
-        gulp.start('index');
-    });
-
-    $.watch('./app/index.html', function () {
-        gulp.start('index');
-    });
+gulp.task('build', ['set-dev-node-env', 'styles', 'scripts', 'buildhtml'], function() {
+    console.log('env:', process.env.NODE_ENV);
 });
 
+gulp.task('build-dist', ['set-prod-node-env', 'styles'], function () {
+//gulp.task('dist', ['set-prod-node-env', 'styles'], function () {
 
-gulp.task('build', ['styles', 'js-hint', 'index'], function () {
-});
+    console.log('env:', process.env.NODE_ENV);
 
-gulp.task('dist', ['build', 'js-min'], function () {
     gulp.src(paths.lib)
         .pipe($.copy(paths.dist, {prefix:1}));
 
     gulp.src(paths.partials)
         .pipe($.copy(paths.dist, {prefix:1}));
+});
+
+
+gulp.task('dist', ['set-prod-node-env', 'build-dist'], function() {
 
 });
 
+gulp.task('set-dev-node-env', function() {
+    return process.env.NODE_ENV = 'development';
+});
+
+gulp.task('set-prod-node-env', function() {
+    return process.env.NODE_ENV = 'production';
+});
+
+gulp.task('watch', ['build'],function() {
+    $.watch(paths.scripts, function () {
+        gulp.start('scripts');
+        gulp.start('js-hint');
+    });
+    $.watch(paths.sass, function () {
+        gulp.start('styles');
+    });
+    $.watch('./app/index.html', function () {
+        gulp.start('buildhtml');
+    });
+});
