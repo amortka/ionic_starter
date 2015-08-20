@@ -13,6 +13,7 @@ bower install
 ```
 
 install ngCordova and some plugin
+
 ```
 bower install ngCordova
 cordova plugin add cordova-plugin-camera

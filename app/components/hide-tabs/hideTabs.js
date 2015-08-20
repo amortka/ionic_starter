@@ -5,6 +5,7 @@ angular.module('app.components', [])
     return {
         restrict: 'A',
         link: function($scope) {
+            console.log('hideTabs link fn');
             var events = [
                 '$ionicView.loaded',
                 '$ionicView.enter',
@@ -22,10 +23,12 @@ angular.module('app.components', [])
             //    });
             //});
             $scope.$on('$ionicView.beforeEnter', function() {
+                console.log('$ionicView.beforeEnter');
                 $rootScope.hideTabs = true;
             });
 
             $scope.$on('$ionicView.leave', function() {
+                console.log('$ionicView.leave');
                 $rootScope.hideTabs = false;
             });
         }

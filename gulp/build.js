@@ -11,18 +11,27 @@ var paths = {
         './app/scss/**/*.scss'
     ],
     partials: [
-        './app/**/*.html'
+        './app/**/*.html',
+        '!./app/index.html'
     ],
     scripts: [
         './app/**/*.js',
         '!./app/lib/**/*.js'
     ],
     app: './app',
-    lib: './app/lib',
+    lib: './app/lib/**/*.*',
     dist: './www',
     tmp: './.tmp'
 };
 
+/*
+ flow:
+ development: *.css, *.html, *.js -> .tmp/
+ [styles] [html] [js]
+
+ dist: .tmp/**.* -> dist/
+
+ */
 
 gulp.task('clean', function () {
     del([
@@ -32,7 +41,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('styles', function () {
-    return gulp.src(paths.sass)
+    gulp.src(paths.sass)
         .pipe($.sass({
             errLogToConsole: true
         }))
@@ -40,26 +49,44 @@ gulp.task('styles', function () {
         .pipe($.minifyCss({
             keepSpecialComments: 0
         }))
-        .pipe($.rename({
-            extname: '.min.css'
-        }))
-        .pipe(gulp.dest(paths.tmp + '/css/'));
+        //.pipe($.rename({
+        //    extname: '.min.css'
+        //}))
+        .pipe(gulp.dest(paths.dist + '/css/'))
+        .pipe(gulp.dest(paths.app + '/css/'));
 });
 
-gulp.task('scripts', function () {
-    return gulp.src(paths.scripts)
+gulp.task('js-hint', function () {
+    gulp.src(paths.scripts)
         .pipe($.jshint())
         .pipe($.jshint.reporter('jshint-stylish'))
         .pipe($.size());
 });
 
+gulp.task('js-min', function () {
+    gulp.src(paths.scripts)
+        .pipe($.concat('app.min.js'))
+        .pipe($.ngAnnotate({
+            remove: true,
+            add: true,
+            single_quotes: true
+        }))
+        .pipe(gulp.dest(paths.dist));
 
-gulp.task('html', function () {
-    var target = gulp.src('./app/index.html');
-    var source = gulp.src(paths.scripts);
+    gulp.src(paths.tmp + '/index.html')
+        .pipe($.inject(gulp.src(paths.dist + '/app.min.js'), {
+            read: false,
+            addRootSlash: false,
+            relative: false,
+            ignorePath: 'www',
+            starttag: '<!-- inject:partials:{{ext}} -->'
+        }))
+        .pipe(gulp.dest(paths.dist));
+});
 
-    return target
-        .pipe($.inject(source, {
+gulp.task('index', function () {
+    gulp.src('./app/index.html')
+        .pipe($.inject(gulp.src(paths.scripts), {
             addRootSlash: false,
             relative: true,
             starttag: '<!-- inject:partials:{{ext}} -->'
@@ -71,47 +98,31 @@ gulp.task('watch', [], function () {
     var injectables = _.union(paths.partials, paths.scripts);
 
     //gulp-watch is better for watching new or deleted files
-   $.watch(paths.sass, function () {
+    $.watch(paths.sass, function () {
         gulp.start('styles');
     });
     $.watch(paths.scripts, function () {
-        gulp.start('scripts');
+        gulp.start('js-hint');
     });
-    $.watch(injectables, function () {
-        gulp.start('html');
+    $.watch(paths.scripts, function () {
+        gulp.start('index');
+    });
+
+    $.watch('./app/index.html', function () {
+        gulp.start('index');
     });
 });
 
 
-gulp.task('build', ['styles', 'scripts', 'html'], function () {});
-
-gulp.task('dist', ['build'], function () {
-
-    var filterJS = $.filter(['**/*.js', '!lib/**/*.*'], {restore: true});
-    var filterIndex = $.filter(['index.html'], {restore: true});
-
-    return gulp.src([
-        './app/**/*.*',
-        './.tmp/**/*.*'
-    ])
-        .pipe(filterJS)
-        .pipe($.concat('app.min.js'))
-        .pipe($.ngAnnotate({
-             remove: true,
-             add: true,
-             single_quotes: true
-         }))
-//        .pipe($.uglify())
-        .pipe(gulp.dest(paths.dist))
-        .pipe(filterJS.restore)
-        .pipe(filterIndex)
-        .pipe($.inject(gulp.src('www/app.min.js'), {
-            read: false,
-            addRootSlash: false,
-            relative: false,
-            ignorePath: 'www',
-            starttag: '<!-- inject:partials:{{ext}} -->'
-        }))
-        .pipe(filterIndex.restore)
-        .pipe(gulp.dest(paths.dist));
+gulp.task('build', ['styles', 'js-hint', 'index'], function () {
 });
+
+gulp.task('dist', ['build', 'js-min'], function () {
+    gulp.src(paths.lib)
+        .pipe($.copy(paths.dist, {prefix:1}));
+
+    gulp.src(paths.partials)
+        .pipe($.copy(paths.dist, {prefix:1}));
+
+});
+
