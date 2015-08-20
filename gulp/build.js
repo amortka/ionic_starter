@@ -117,7 +117,7 @@ gulp.task('set-prod-node-env', function() {
 gulp.task('watch', ['build'],function() {
     $.watch(paths.scripts, function () {
         gulp.start('scripts');
-        gulp.start('js-hint');
+        gulp.start('buildhtml');
     });
     $.watch(paths.sass, function () {
         gulp.start('styles');
