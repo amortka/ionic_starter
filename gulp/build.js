@@ -1,10 +1,10 @@
 'use strict';
 
 var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
+var $ = require('gulp-load-plugins')(); // jshint ignore:line
 var del = require('del');
 var util = require('util');
-var _ = require('lodash');
+var _ = require('lodash'); // jshint ignore:line
 
 var paths = {
     sass: [
@@ -51,7 +51,7 @@ gulp.task('styles', function() {
         .pipe(process.env.NODE_ENV === 'production' ? $.rename({
             extname: '.min.css'
         }) : $.util.noop())
-        .pipe(process.env.NODE_ENV === 'production' ? gulp.dest(paths.dist + '/css/') : $.util.noop())
+        .pipe(process.env.NODE_ENV === 'production' ? gulp.dest(paths.dist + '/css/') : $.util.noop());
 });
 
 gulp.task('js-min', function () {
@@ -107,17 +107,17 @@ gulp.task('dist', ['set-prod-node-env', 'build-dist'], function() {
 });
 
 gulp.task('set-dev-node-env', function() {
-    return process.env.NODE_ENV = 'development';
+    process.env.NODE_ENV = 'development';
 });
 
 gulp.task('set-prod-node-env', function() {
-    return process.env.NODE_ENV = 'production';
+    process.env.NODE_ENV = 'production';
 });
 
 gulp.task('watch', ['build'],function() {
     $.watch(paths.scripts, function () {
         gulp.start('scripts');
-        gulp.start('js-hint');
+        gulp.start('buildhtml');
     });
     $.watch(paths.sass, function () {
         gulp.start('styles');
