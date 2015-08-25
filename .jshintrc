@@ -11,6 +11,6 @@
     "_"         : false,
     "module"    : false,
     "require"   : false,
-    'windows'   : false
+    "windows"   : false
   }
 }

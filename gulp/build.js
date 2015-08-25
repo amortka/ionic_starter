@@ -77,7 +77,7 @@ gulp.task('disthtml', ['js-min'], function () {
 
 gulp.task('buildhtml', function() {
     gulp.src('./app/index.html')
-        .pipe($.inject(gulp.src(paths.scripts), {
+        .pipe($.inject(gulp.src(paths.scripts).pipe($.sort()), {
             addRootSlash: false,
             relative: true,
             starttag: '<!-- inject:partials:{{ext}} -->'

@@ -12,8 +12,7 @@ angular.module('app.list', [])
                 views: {
                     'tab-chats': {
                         templateUrl: 'pages/list/list.tmpl.html',
-                        controller: 'ListCtrl',
-                        controllerAs: 'listCtrl'
+                        controller: 'ListCtrl as listCtrl'
                     }
                 }
             })
@@ -22,8 +21,7 @@ angular.module('app.list', [])
                 views: {
                     'tab-chats': {
                         templateUrl: 'pages/list/list-secondary.tmpl.html',
-                        controller: 'ListSecondaryCtrl',
-                        controllerAs: 'listSecondaryCtrl'
+                        controller: 'ListSecondaryCtrl as listSecondaryCtrl'
                     }
                 }
             });

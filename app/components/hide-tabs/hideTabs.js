@@ -1,13 +1,10 @@
 'use strict';
 
-angular.module('app.components', [])
+angular.module('app.components')
 .directive('hideTabs', function($rootScope) {
     return {
         restrict: 'A',
-        link: function($scope) {
-            console.log('hello world13');
-
-
+        link: function() {
 
             var events = [
                 '$ionicView.loaded',

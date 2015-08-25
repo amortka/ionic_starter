@@ -14,8 +14,7 @@ angular.module('app.main', [])
       views: {
         'tab-dash': {
           templateUrl: 'pages/main/main.tmpl.html',
-          controller: 'MainCtrl',
-          controllerAs: 'mainCtrl'
+          controller: 'MainCtrl as mainCtrl'
         }
       }
     });

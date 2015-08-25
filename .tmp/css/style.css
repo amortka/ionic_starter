@@ -1,4 +1,7 @@
 @charset "UTF-8";
+body {
+  cursor: url('http://ionicframework.com/img/finger.png'), auto; }
+
 /*
 To customize the look and feel of Ionic, you can override the variables
 in ionic's _variables.scss file.
