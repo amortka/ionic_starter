@@ -1,4 +1,4 @@
-'use strcit';
+'use strict';
 
 angular.module('app.components')
     .directive('dragOut', function ($ionicGesture) {

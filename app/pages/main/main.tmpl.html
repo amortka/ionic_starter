@@ -1,23 +1,22 @@
 <ion-view view-title="Dashboard">
-
-  <ion-content>
-
-        <ion-list>
-          <ion-item ng-repeat="item in mainCtrl.items" on-swipe-left="mainCtrl.swipe(item)"
-                    class="animated"
-                 ng-class="{'item-positive':item.checked}">
-              <i class="icon ion-person-stalker"></i>
-              {{ item.name }}!
-              <span class="badge badge-assertive">{{ item.qty }}</span>
-              <ion-option-button class="button-balanced"
-                                 ng-click="edit(item)">
-                  Edit
-              </ion-option-button>
-              <ion-option-button class="button-assertive"
-                                 ng-click="mainCtrl.removeItem(item)">
-                  Delete
-              </ion-option-button>
-          </ion-item>
-        </ion-list>
+  <ion-nav-buttons side="left">
+    <button class="button" ng-click="mainCtrl.toggleMenu()">
+      menu
+    </button>
+  </ion-nav-buttons>
+  <ion-content  on-swipe-right="mainCtrl.goBack()" on-swipe-left="mainCtrl.goForward()">
+    <ion-list>
+      <ion-item class="item-remove-animate" ng-class="{'item-positive':item.checked}" ng-repeat="item in mainCtrl.items" on-swipe-left="mainCtrl.swipe(item)">
+        <i class="icon ion-pricetag"></i>
+        {{ item.name }}
+        <span class="badge badge-assertive">{{ item.qty }}</span>
+        <ion-option-button class="button-balanced" ng-click="edit(item)">
+          Edit
+        </ion-option-button>
+        <ion-option-button class="button-assertive" ng-click="mainCtrl.removeItem(item)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

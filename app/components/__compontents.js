@@ -1,3 +1,3 @@
-'use strcit';
+'use strict';
 
 angular.module('app.components', [])
