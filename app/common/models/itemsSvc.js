@@ -8,7 +8,6 @@ angular.module('app.services', [])
             {name: 'potato', qty: 78},
             {name: 'eggs', qty: 12},
             {name: 'fish', qty: 2}
-
         ];
 
         var getItems = function () {
