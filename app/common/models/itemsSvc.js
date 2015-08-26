@@ -10,7 +10,7 @@ angular.module('app.services', [])
             qty: 2
         }, {
             name: 'potato',
-            qty: 3
+            qty: 78
         }];
 
         var getItems = function () {
