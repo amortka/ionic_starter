@@ -6,8 +6,7 @@ angular.module('app.services', [])
             {name: 'banana', qty: 1},
             {name: 'apple', qty: 2},
             {name: 'potato', qty: 78},
-            {name: 'eggs', qty: 12},
-            {name: 'fish', qty: 2}
+            {name: 'eggs', qty: 12}
         ];
 
         var getItems = function () {
