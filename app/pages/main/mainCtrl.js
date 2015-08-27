@@ -5,10 +5,14 @@
  */
 angular.module('app.main')
 
-    .controller('MainCtrl', function ($timeout, Item) {
+    .controller('MainCtrl', function ($ionicSideMenuDelegate, $timeout, Item) {
         var vm = this;
 
         vm.items = {};
+
+        vm.toggleMenu = function() {
+            $ionicSideMenuDelegate.toggleLeft();
+        };
 
         vm.swipe = function(item) {
             $timeout(function() {
