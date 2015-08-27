@@ -1,14 +1,13 @@
 {
   "name": "fridge",
   "app_id": "",
-  "documentRoot": "app",
-  "createDocumentRoot": "app",
+  "documentRoot": "www",
+  "createDocumentRoot": "www",
   "gulpStartupTasks": [
-    "sass",
-    "watch"
+    "dist"
   ],
   "watchPatterns": [
-    "app/**/*",
-    "!app/lib/**/*"
+    "www/**/*",
+    "!www/lib/**/*"
   ]
 }

@@ -48,14 +48,15 @@ gulp.task('styles', function() {
         .pipe($.minifyCss({
             keepSpecialComments: 0
         }))
-        .pipe(process.env.NODE_ENV === 'production' ? $.rename({
-            extname: '.min.css'
-        }) : $.util.noop())
-        .pipe(process.env.NODE_ENV === 'production' ? gulp.dest(paths.dist + '/css/') : $.util.noop());
+        //.pipe(process.env.NODE_ENV === 'prod' ? $.rename({
+        //    extname: '.min.css'
+        //}) : $.util.noop())
+        .pipe(process.env.NODE_ENV === 'prod' ? gulp.dest(paths.dist + '/css/') : $.util.noop());
 });
 
 gulp.task('js-min', function () {
     return gulp.src(paths.scripts)
+        .pipe($.sort())
         .pipe($.concat('app.min.js'))
         .pipe($.ngAnnotate({
             remove: true,
@@ -69,7 +70,8 @@ gulp.task('disthtml', ['js-min'], function () {
     return gulp.src('./app/index.html')
         .pipe($.inject(gulp.src(paths.dist + '/app.min.js'), {
             addRootSlash: false,
-            relative: true,
+            relative: false,
+            ignorePath: 'www/',
             starttag: '<!-- inject:partials:{{ext}} -->'
         }))
         .pipe(gulp.dest(paths.dist));
@@ -86,14 +88,9 @@ gulp.task('buildhtml', function() {
 });
 
 gulp.task('build', ['set-dev-node-env', 'styles', 'scripts', 'buildhtml'], function() {
-    console.log('env:', process.env.NODE_ENV);
 });
 
-gulp.task('build-dist', ['set-prod-node-env', 'styles'], function () {
-//gulp.task('dist', ['set-prod-node-env', 'styles'], function () {
-
-    console.log('env:', process.env.NODE_ENV);
-
+gulp.task('build-dist', ['set-prod-node-env', 'styles', 'disthtml'], function () {
     gulp.src(paths.lib)
         .pipe($.copy(paths.dist, {prefix:1}));
 
@@ -107,11 +104,11 @@ gulp.task('dist', ['set-prod-node-env', 'build-dist'], function() {
 });
 
 gulp.task('set-dev-node-env', function() {
-    process.env.NODE_ENV = 'development';
+    process.env.NODE_ENV = 'dev';
 });
 
 gulp.task('set-prod-node-env', function() {
-    process.env.NODE_ENV = 'production';
+    process.env.NODE_ENV = 'prod';
 });
 
 gulp.task('watch', ['build'],function() {

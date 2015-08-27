@@ -18,8 +18,13 @@ angular.module('app.services', [])
             _.remove(items, item);
         };
 
+        var addItem = function(item) {
+            items.push(item);
+        };
+
         return {
             getItems: getItems,
+            addItem: addItem,
             removeItem: removeItem
         }
     });
