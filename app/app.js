@@ -32,4 +32,9 @@ angular.module('myApp', [
       });
     // $urlRouterProvider.deferIntercept();
     $urlRouterProvider.otherwise('/main');
-  });
+  })
+    .config(['$ionicConfigProvider', function($ionicConfigProvider) {
+
+        $ionicConfigProvider.tabs.position('bottom');
+
+    }]);

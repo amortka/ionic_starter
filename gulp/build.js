@@ -48,16 +48,16 @@ gulp.task('styles', function() {
         .pipe($.minifyCss({
             keepSpecialComments: 0
         }))
-        // .pipe(process.env.NODE_ENV === 'production' ? $.rename({
-        //     extname: '.min.css'
-        // }) : $.util.noop())
-        .pipe(process.env.NODE_ENV === 'production' ? gulp.dest(paths.dist + '/css/') : $.util.noop());
+        //.pipe(process.env.NODE_ENV === 'prod' ? $.rename({
+        //    extname: '.min.css'
+        //}) : $.util.noop())
+        .pipe(process.env.NODE_ENV === 'prod' ? gulp.dest(paths.dist + '/css/') : $.util.noop());
 });
 
 gulp.task('js-min', function () {
     return gulp.src(paths.scripts)
         .pipe($.sort())
-        .pipe($.concat('app.js'))
+        .pipe($.concat('app.min.js'))
         .pipe($.ngAnnotate({
             remove: true,
             add: true,
@@ -66,20 +66,12 @@ gulp.task('js-min', function () {
         .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('test', function() {
-
-  return gulp.src('app.js', { cwd: 'app/' })
-    .pipe($.debug());
-
-});
-
-
 gulp.task('disthtml', ['js-min'], function () {
     return gulp.src('./app/index.html')
-        .pipe($.inject(gulp.src(paths.dist + '/app.js', {read: false}), {
+        .pipe($.inject(gulp.src(paths.dist + '/app.min.js'), {
             addRootSlash: false,
             relative: false,
-            ignorePath: 'www',
+            ignorePath: 'www/',
             starttag: '<!-- inject:partials:{{ext}} -->'
         }))
         .pipe(gulp.dest(paths.dist));
@@ -96,12 +88,9 @@ gulp.task('buildhtml', function() {
 });
 
 gulp.task('build', ['set-dev-node-env', 'styles', 'scripts', 'buildhtml'], function() {
-    console.log('env:', process.env.NODE_ENV);
 });
 
-gulp.task('build-dist', ['set-prod-node-env', 'styles', 'js-min', 'disthtml'], function () {
-    console.log('env:', process.env.NODE_ENV);
-
+gulp.task('build-dist', ['set-prod-node-env', 'styles', 'disthtml'], function () {
     gulp.src(paths.lib)
         .pipe($.copy(paths.dist, {prefix:1}));
 
@@ -115,11 +104,11 @@ gulp.task('dist', ['set-prod-node-env', 'build-dist'], function() {
 });
 
 gulp.task('set-dev-node-env', function() {
-    process.env.NODE_ENV = 'development';
+    process.env.NODE_ENV = 'dev';
 });
 
 gulp.task('set-prod-node-env', function() {
-    process.env.NODE_ENV = 'production';
+    process.env.NODE_ENV = 'prod';
 });
 
 gulp.task('watch', ['build'],function() {

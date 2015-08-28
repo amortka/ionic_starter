@@ -11,7 +11,7 @@ angular.module('app.main')
         vm.items = {};
 
         vm.toggleMenu = function() {
-          $ionicSideMenuDelegate.toggleLeft();
+            $ionicSideMenuDelegate.toggleLeft();
         };
 
         vm.swipe = function(item) {
@@ -25,14 +25,6 @@ angular.module('app.main')
             console.log('removing item');
             Item.removeItem(item);
             getItems();
-        };
-
-        vm.goForward = function() {
-          console.log('go++');
-        };
-
-        vm.goBack = function() {
-          console.log('go--');
         };
 
         function init() {
